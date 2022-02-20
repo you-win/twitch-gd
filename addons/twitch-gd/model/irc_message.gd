@@ -47,6 +47,11 @@ var params := []
 # Builtin functions                                                           #
 ###############################################################################
 
+func _init(text: String = "") -> void:
+	if not text.empty():
+		if parse(text) != OK:
+			printerr("Failed parsing message: %s" % text)
+
 func _to_string() -> String:
 	var r := {}
 	for i in get_property_list():

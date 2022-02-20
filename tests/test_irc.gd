@@ -7,7 +7,13 @@ var irc: IrcMessage
 func before_each():
 	irc = IrcMessage.new()
 
-func test_twitch_message_pass():
+func test_twitch_ping_pass():
+	assert_eq(irc.parse("PING :tmi.twitch.tv"), OK)
+	
+	assert_eq(irc.command, "PING")
+	assert_eq(irc.params[0], "tmi.twitch.tv")
+
+func test_twitch_messages_pass():
 	assert_eq(irc.parse(":leppunen@tmi.twitch.tv PRIVMSG #pajlada :LUL"), OK)
 	
 	assert_eq(irc.raw, ":leppunen@tmi.twitch.tv PRIVMSG #pajlada :LUL")
@@ -16,6 +22,14 @@ func test_twitch_message_pass():
 	assert_eq(irc.source.host, "tmi.twitch.tv")
 	assert_eq(irc.command, "PRIVMSG")
 	assert_eq(irc.params, ["#pajlada", "LUL"])
+	
+	irc = IrcMessage.new(":team_youwin@tmi.twitch.tv PRIVMSG #team_youwin :hi")
+	
+	assert_eq(irc.source.nickname, "team_youwin")
+	assert_eq(irc.source.host, "tmi.twitch.tv")
+	assert_eq(irc.command, "PRIVMSG")
+	assert_eq(irc.params[0], "#team_youwin")
+	assert_eq(irc.params[1], "hi")
 
 func test_twitch_reconnect_pass():
 	assert_eq(irc.parse(":team_youwin@tmi.twitch.tv RECONNECT #team_youwin"), OK)
